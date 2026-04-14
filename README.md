@@ -49,10 +49,8 @@ This structural perspective is essential to the project because induced proximit
 ```text
 Final_Presentation/
 │
-├── DEBM Final Presentation.pdf
-├── Informació DEBM Final Presentation.docx
-├── Glossary.docx
-├── README.txt
+├── DEBM_Final_Presentation.pdf
+├── Induced_Proximity_Supporting_Material.pdf
 │
 ├── Labels/
 ├── Papers/
@@ -64,17 +62,12 @@ Final_Presentation/
 
 ## Main Files
 
-### `DEBM Final Presentation.pdf`
+### `DEBM_Final_Presentation.pdf`
 Final presentation of the project, containing the complete narrative, conceptual framework, structural examples, and comparative analysis.
 
-### `Informació DEBM Final Presentation.docx`
-Supporting document with the extended written content used to prepare the final presentation.
-
-### `Glossary.docx`
-Glossary of technical terms relevant to induced proximity, targeted degradation, structural biology, and related concepts.
-
-### `README.txt`
-Initial summary of the repository contents.
+### `Induced_Proximity_Supporting_Material.pdf`
+Supporting document with the extended written content used for presentation building, mechanism analysis, and
+structural bioinformatics interpretation in PyMOL.
 
 ---
 
@@ -119,8 +112,6 @@ The main tools used in this project are:
 
 - **PyMOL** for structural visualization and figure preparation
 - **RStudio / R Markdown** for schematic generation and comparative analysis figures
-- **Microsoft Word** for written documentation
-- **PDF format** for the final presentation and supporting literature
 
 Together, these tools support a workflow that combines **scientific communication**, **visual analysis**, and **structural interpretation**.
 
