@@ -1,0 +1,244 @@
+---
+title: "ubiquitination"
+author: "Eira Fontanals Muñoz"
+date: "2026-03-22"
+output: html_document
+---
+
+```{r, message=FALSE, error=FALSE}
+
+library(grid)
+
+png("ubiquitination_crbn.png",
+    width = 2400, height = 1500, res = 180, bg = "transparent")
+grid.newpage()
+
+C <- list(
+  e1_fill="#A8D96B", e1_brd="#5A8A1E",
+  e2_fill="#68C7D4", e2_brd="#267986",
+  e3_fill="#6B8FD4", e3_brd="#2E5BAA",
+  ub_fill="#E8A838", ub_brd="#A06010", ub_txt="#3A2000",
+  tgt_fill="#945057", tgt_brd="#542C30",
+  pro_fill="#9B7FD4", pro_brd="#5B3FA0",
+  pro_ring="#C4B0E8",
+  cul_fill = "#7B52B0", cul_brd = "#3A2080",
+  rbx_fill = "#C0383A", rbx_brd = "#7A1012",
+  ddb_fill = "#63605E", ddb_brd = "#403D3C",
+  crbn_fill="#E0B874", crbn_brd="#574423",
+  zoom_brd="#7AAFD4",
+  arrow="#333333",
+  txt_main="#1A1A1A",
+  txt_sub="#555555",
+  step_col="#666666"
+)
+
+rr <- function(x, y, w, h, fill, brd, lwd=2.5, r=0.015) {
+  grid.roundrect(x=unit(x,"npc"), y=unit(y,"npc"),
+    width=unit(w,"npc"), height=unit(h,"npc"),
+    r=unit(r,"snpc"),
+    gp=gpar(fill=fill, col=brd, lwd=lwd))
+}
+
+circ <- function(x, y, r=0.022, fill, brd, lwd=2) {
+  grid.circle(x=unit(x,"npc"), y=unit(y,"npc"), r=unit(r,"snpc"),
+    gp=gpar(fill=fill, col=brd, lwd=lwd))
+}
+
+ub <- function(x, y, r=0.022) {
+  circ(x, y, r=r, fill=C$ub_fill, brd=C$ub_brd)
+  grid.text("Ub", x=unit(x,"npc"), y=unit(y,"npc"),
+    gp=gpar(fontsize=11, fontface="bold", col=C$ub_txt))
+}
+
+lbl <- function(x, y, txt, size=16, face="plain", col=C$txt_main, just="centre") {
+  grid.text(txt, x=unit(x,"npc"), y=unit(y,"npc"), just=just,
+    gp=gpar(fontsize=size, fontface=face, col=col))
+}
+
+arr <- function(x0, y0, x1, y1, col=C$arrow, lwd=2.5, lty=1) {
+  grid.lines(x=unit(c(x0,x1),"npc"), y=unit(c(y0,y1),"npc"),
+    arrow=arrow(type="closed", length=unit(0.13,"inches")),
+    gp=gpar(col=col, lwd=lwd, lty=lty, fill=col))
+}
+
+seg <- function(x0, y0, x1, y1, col=C$arrow, lwd=2, lty=1) {
+  grid.lines(x=unit(c(x0,x1),"npc"), y=unit(c(y0,y1),"npc"),
+    gp=gpar(col=col, lwd=lwd, lty=lty))
+}
+
+# ── MAIN HORIZONTAL FLOW ─────────────────────────────────
+Y  <- 0.72; BW <- 0.10; BH <- 0.11
+YL <- 0.585; YS <- 0.555
+
+# STEP 1 – E1
+X1 <- 0.09
+rr(X1, Y, BW, BH, C$e1_fill, C$e1_brd)
+lbl(X1, Y, "E1", size=30, face="bold", col="#1A1A1A")
+ub(X1, Y+0.108, r=0.023)
+lbl(X1-0.044, Y+0.108, "ATP", size=12, col="#888888")
+arr(X1, Y+0.094, X1, Y+0.062)
+lbl(X1, YL, "① Activation",    size=15, face="bold", col=C$step_col)
+lbl(X1, YS, "E1 activates Ub", size=13, col=C$txt_sub)
+
+# STEP 2 – E2
+X2 <- 0.27
+rr(X2, Y, BW, BH, C$e2_fill, C$e2_brd)
+lbl(X2, Y, "E2", size=30, face="bold", col="white")
+ub(X2, Y+0.108, r=0.023)
+arr(X2, Y+0.094, X2, Y+0.062)
+lbl(X2, YL, "② Conjugation",  size=15, face="bold", col=C$step_col)
+lbl(X2, YS, "E2 carries Ub",  size=13, col=C$txt_sub)
+
+arr(X1+BW/2+0.006, Y, X2-BW/2-0.006, Y)
+
+# STEP 3 – E3 + Target
+X3 <- 0.47
+rr(X3, Y, 0.13, BH, C$e3_fill, C$e3_brd)
+lbl(X3, Y+0.020, "E3",     size=26, face="bold",   col="white")
+lbl(X3, Y-0.024, "ligase", size=15, face="italic",  col="#C8D8FF")
+
+# Target above E3
+rr(X3+0.008, Y+0.125, 0.095, 0.072, C$tgt_fill, C$tgt_brd, lwd=2)
+lbl(X3+0.008, Y+0.138, "Target",  size=14, face="bold", col="white")
+lbl(X3+0.008, Y+0.115, "Protein", size=12, col="#DDBBBB")
+
+# E2+Ub arriving at E3
+circ(X3+0.092, Y+0.178, r=0.020, fill=C$e2_fill, brd=C$e2_brd)
+lbl(X3+0.092, Y+0.178, "E2", size=10, face="bold", col="white")
+ub(X3+0.132, Y+0.178, r=0.020)
+arr(X3+0.092, Y+0.160, X3+0.068, Y+0.137, col="#666666", lwd=1.8, lty=2)
+
+lbl(X3, YL, "③ Ligation",               size=15, face="bold", col=C$step_col)
+lbl(X3, YS, "E3 transfers Ub to target", size=13, col=C$txt_sub)
+
+arr(X2+BW/2+0.006, Y, X3-0.13/2-0.006, Y)
+
+# STEP 4 – Ubiquitinated target
+X4 <- 0.67
+rr(X4, Y, 0.10, BH, C$tgt_fill, C$tgt_brd)
+lbl(X4, Y+0.020, "Target",  size=22, face="bold", col="white")
+lbl(X4, Y-0.024, "Protein", size=14, col="#DDBBBB")
+ub(X4+0.060, Y+0.074, r=0.021)
+ub(X4+0.087, Y+0.034, r=0.021)
+ub(X4+0.070, Y-0.025, r=0.021)
+
+lbl(X4, YL, "④ Tagged",               size=15, face="bold", col=C$step_col)
+lbl(X4, YS, "Poly-Ub chain attached", size=13, col=C$txt_sub)
+
+arr(X3+0.13/2+0.006, Y, X4-0.10/2-0.006, Y)
+
+# STEP 5 – Proteasome (bigger, moved right)
+X5 <- 0.895
+RX  <- 0.050   # wider rings
+RH  <- 0.034   # taller rings
+ring_ys <- Y + seq(-0.068, 0.068, length.out=5)
+ring_fills <- c(C$pro_ring, C$pro_fill, C$pro_fill, C$pro_fill, C$pro_ring)
+for (i in seq_along(ring_ys)) {
+  rr(X5, ring_ys[i], RX*2, RH, ring_fills[i], C$pro_brd, lwd=2.2, r=0.010)
+}
+lbl(X5, Y, "Proteasome", size=16, face="bold", col="white")
+
+# peptide squiggles — shifted right so they clear the barrel
+for (dy in c(0.034, 0.000, -0.034)) {
+  xs <- X5 + c(0.054, 0.070, 0.082, 0.098)
+  ys <- Y  + dy + c(0, 0.015, -0.015, 0)
+  grid.lines(x=unit(xs,"npc"), y=unit(ys,"npc"),
+    gp=gpar(col="#D18F2D", lwd=3.0))
+}
+lbl(X5+0.080, Y-0.090, "peptides", size=12, col="#C08020")
+
+lbl(X5, YL, "⑤ Degradation", size=15, face="bold", col=C$step_col)
+lbl(X5, YS, "26S proteasome", size=13, col=C$txt_sub)
+
+# Arrow from step 4 → proteasome (shifted right to avoid Ub chain)
+arr(X4+0.10/2+0.022, Y, X5-RX-0.006, Y)
+
+# ── ZOOM BOX ─────────────────────────────────────────────
+ZX <- 0.50; ZY <- 0.23; ZW <- 0.36; ZH <- 0.33
+ZOOM_TOP <- ZY + ZH/2
+
+# CHANGED: arrow starts below the subtitle "E3 transfers Ub to target" (YS)
+ARROW_START_Y <- YS - 0.018
+# CHANGED: "zoom in" label centered on the arrow's midpoint
+ARROW_MID_Y   <- (ARROW_START_Y + ZOOM_TOP) / 2
+
+arr(X3, ARROW_START_Y,
+    X3, ZOOM_TOP + 0.004,
+    col="#7AAFD4", lwd=2.2, lty=2)
+
+lbl(X3+0.03, ARROW_MID_Y,
+    "zoom in", size=13, face="italic", col="#7AAFD4")
+
+# dashed border, no fill
+grid.roundrect(
+  x=unit(ZX,"npc"), y=unit(ZY,"npc"),
+  width=unit(ZW,"npc"), height=unit(ZH,"npc"),
+  r=unit(0.02,"snpc"),
+  gp=gpar(fill=NA, col=C$zoom_brd, lwd=2.2, lty="dashed"))
+
+# CHANGED: CRL4^CRBN label – bottom-left inside zoom box
+lbl(ZX - ZW/2 + 0.030, ZY - ZH/2 + 0.022,
+    "CRL4", size=14, face="bold", col="#7AAFD4", just="left")
+# superscript "CRBN" — placed slightly right and up from "CRL4"
+lbl(ZX - ZW/2 + 0.077, ZY - ZH/2 + 0.032,
+    "CRBN", size=10, face="bold.italic", col="#7AAFD4", just="left")
+
+# ── CUL4A as flat bar ──────────────────────────────────
+CUL_Y <- ZY + 0.092
+CUL_W <- 0.28
+CUL_H <- 0.044
+rr(ZX, CUL_Y, CUL_W, CUL_H, fill=C$cul_fill, brd=C$cul_brd, lwd=2.5, r=0.010)
+lbl(ZX, CUL_Y, "CUL4A", size=16, face="bold", col="white")
+
+# ── RBX1 – left end of CUL4A ──────────────────────────
+RBX_X <- ZX - 0.096
+RBX_Y <- ZY + 0.030
+rr(RBX_X, RBX_Y, 0.074, 0.050, C$rbx_fill, C$rbx_brd, lwd=2, r=0.01)
+lbl(RBX_X, RBX_Y, "RBX1", size=14, face="bold", col="white")
+seg(RBX_X, CUL_Y - CUL_H/2,
+    RBX_X, RBX_Y + 0.026,
+    col=C$cul_brd, lwd=2.5)
+
+# CHANGED: E2 + Ub added to the left of RBX1 inside zoom box
+E2Z_X <- RBX_X - 0.058
+E2Z_Y <- RBX_Y - 0.005
+circ(E2Z_X, E2Z_Y, r=0.022, fill=C$e2_fill, brd=C$e2_brd)
+lbl(E2Z_X, E2Z_Y, "E2", size=12, face="bold", col="white")
+ub(E2Z_X, E2Z_Y + 0.052, r=0.020)
+# dashed arrow from E2 toward RBX1
+arr(E2Z_X + 0.024, E2Z_Y,
+    RBX_X - 0.039, RBX_Y,
+    col="#7AAFD4", lwd=1.8, lty=2)
+
+# ── DDB1 – right side of CUL4A ────────────────────────
+DDB_X <- ZX + 0.058
+DDB_Y <- ZY + 0.028
+rr(DDB_X, DDB_Y, 0.074, 0.054, C$ddb_fill, C$ddb_brd, lwd=2, r=0.01)
+lbl(DDB_X, DDB_Y, "DDB1", size=14, face="bold", col="white")
+seg(DDB_X, CUL_Y - CUL_H/2,
+    DDB_X, DDB_Y + 0.028,
+    col=C$cul_brd, lwd=2.5)
+
+# ── CRBN – below DDB1 ─────────────────────────────────
+CRBN_X <- DDB_X
+CRBN_Y <- ZY - 0.058
+rr(CRBN_X, CRBN_Y, 0.092, 0.054, C$crbn_fill, C$crbn_brd, lwd=2.5, r=0.01)
+lbl(CRBN_X, CRBN_Y, "CRBN", size=16, face="bold", col="#3A2800")
+seg(CRBN_X, DDB_Y - 0.028,
+    CRBN_X, CRBN_Y + 0.028,
+    col=C$ddb_brd, lwd=2)
+
+# ── Target bound to CRBN ──────────────────────────────
+TGT_X <- CRBN_X
+TGT_Y <- ZY - 0.128
+rr(TGT_X, TGT_Y, 0.082, 0.044, C$tgt_fill, C$tgt_brd, lwd=2, r=0.015)
+lbl(TGT_X, TGT_Y, "Target", size=13, face="bold", col="white")
+seg(TGT_X, CRBN_Y - 0.028,
+    TGT_X, TGT_Y + 0.023,
+    col=C$crbn_brd, lwd=2)
+
+dev.off()
+cat("Done.\n")
+knitr::include_graphics("ubiquitination_crbn.png")
+```
+
